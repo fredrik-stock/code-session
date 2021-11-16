@@ -2,12 +2,29 @@ export const Employee = (props) => {
   const Employee = props.Employee;
 
   return (
-    <div>
-      <p>Employee ID: {Employee.id}</p>
-      <p>Name: {Employee.name}</p>
-      <p>Role: {Employee.roles}</p>
-      <p>Email: {Employee.email}</p>
-      {Employee.bossId && <p>Employee Boss ID: {Employee.bossId}</p>}
+    <div style={{ textAlign: "center" }}>
+      <p>
+        <b>Employee ID: </b>
+        {Employee.id}
+      </p>
+      <p>
+        <b>Name: </b>
+        {Employee.name}
+      </p>
+      <p>
+        <b>Role: </b>
+        {Employee.roles}
+      </p>
+      <p>
+        <b>Email: </b>
+        {Employee.email}
+      </p>
+      {Employee.bossId && (
+        <p>
+          <b>Employee Boss ID: </b>
+          {Employee.bossId}
+        </p>
+      )}
     </div>
   );
 };

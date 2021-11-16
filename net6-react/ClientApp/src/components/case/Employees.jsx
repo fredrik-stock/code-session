@@ -1,5 +1,5 @@
-import { Todo } from "./Todo";
 import React, { useState, useEffect, useMemo } from "react";
+import { Todo } from "./Todo";
 import { Employee } from "./Employee";
 
 /** 1. Last inn data, vis indikasjon på at data laster
@@ -139,7 +139,9 @@ export const Employees = () => {
             what="Vise sjefen"
             how="Vis sjefen for organisasjonen her med <Employee />-komponenten">
             {CEO && (
-              <div onClick={() => handleClick(CEO)}>
+              <div
+                style={{ border: "2px solid black" }}
+                onClick={() => handleClick(CEO)}>
                 <Employee Employee={CEO} />
               </div>
             )}
@@ -156,7 +158,10 @@ export const Employees = () => {
                       <h1>{employee[key].name}</h1>
                       {leader[key].map((e) => {
                         return (
-                          <div key={e.id} onClick={() => handleClick(e)}>
+                          <div
+                            style={{ border: "2px solid black" }}
+                            key={e.id}
+                            onClick={() => handleClick(e)}>
                             <Employee Employee={e} />
                           </div>
                         );
@@ -176,6 +181,7 @@ export const Employees = () => {
                 {Object.keys(bossHasBoss).map((key) => {
                   return (
                     <div
+                      style={{ border: "2px solid black" }}
                       onClick={() => handleClick(bossHasBoss[key])}
                       key={key}>
                       <Employee Employee={bossHasBoss[key]} />
