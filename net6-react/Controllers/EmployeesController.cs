@@ -54,8 +54,19 @@ public class EmployeesController : ControllerBase
     public IEnumerable<User> GetFakes(int count)
     {
         // Generer {count} fiktive ansatte
-
-        throw new NotImplementedException();
+        IList<User> randomUsers = new List<User>();
+        for(int i = 0; i < count; i++)
+        {
+            User randomUser(User[] userList)
+            {
+                var random = new Random();
+                int index = random.Next(Users.Length);
+                return Users[index];
+            }
+            
+            randomUsers.Add(new User(i, randomUser(Users).Name, randomUser(Users).Email, randomUser(Users).Roles, randomUser(Users).BossId));
+        }
+        return randomUsers;
     }
 
     [HttpGet, Route("names")]
