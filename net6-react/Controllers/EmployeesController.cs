@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace net6_react.Controllers;
 
@@ -14,6 +15,10 @@ public class EmployeesController : ControllerBase
         new User(101, "Pelle Persen", "pelle@x.no", new [] { "Ukentlig leder" }, 1),
         new User(201, "Arne Arntsen", "arne@x.no", new [] { "Dreng" }, 101),
         new User(202, "Ulle Urvik", "beanie_baby_collector_2291@hotmail.com", new [] { "Byssegutt" }, 101),
+        new User(223, "Arntsen Urvik", "collector@hotmail.com", new [] { "Byssegutt" }, 101),
+        new User(224, "Per Artur", "somethingElse@gmail.com", new [] { "Byssegutt" }, 101),
+        new User(225, "Hamsvik Steinsen", "beanie_baby_collector_2291@hotmail.com", new [] { "Matros" }, 1),
+        new User(226, "Ulrik Steinskjer", "steinskjer@x.com", new [] { "Matros" }, 1),
     };
 
     [HttpGet]
@@ -29,13 +34,12 @@ public class EmployeesController : ControllerBase
         // Returner brukerne, men med navn uppercased og negativ userId (101 => -101)
         // Organisasjons-strukturen må bevares (Id / BossId)
         IList<User> modifyUsers = new List<User>();
-
-        for (int i = 0; i < Users.Length; i++)
+        foreach (var user in Users)
         {
-            var negativeID = Users[i].Id * -1;
-            modifyUsers.Add(new User(negativeID, Users[i].Name.ToUpper(), Users[i].Email, Users[i].Roles, Users[i].BossId));
+            var negativeID = user.Id * -1;
+            var negativBossId = user.BossId * -1;
+            modifyUsers.Add(new User(negativeID, user.Name.ToUpper(), user.Email, user.Roles, negativBossId));
         }
-
         return modifyUsers;
     }
 

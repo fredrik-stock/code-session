@@ -87,7 +87,7 @@ export const Employees = () => {
   useEffect(() => {
     console.log("Getting Initial Content");
     async function fetchData() {
-      const res = await fetch("employees");
+      const res = await fetch("employees/modified");
       res
         .json()
         .then((data) => {

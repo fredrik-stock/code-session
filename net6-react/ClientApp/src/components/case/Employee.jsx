@@ -28,9 +28,3 @@ export const Employee = (props) => {
     </div>
   );
 };
-
-// bossId: null
-// email: "ola@x.no"
-// id: 1
-// name: "Ola Olsen"
-// roles: ['Daglig leder']
