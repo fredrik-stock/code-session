@@ -28,33 +28,74 @@ public class EmployeesController : ControllerBase
     {
         // Returner brukerne, men med navn uppercased og negativ userId (101 => -101)
         // Organisasjons-strukturen må bevares (Id / BossId)
-        
-        throw new NotImplementedException();
+        IList<User> modifyUsers = new List<User>();
+
+        for (int i = 0; i < Users.Length; i++)
+        {
+            var negativeID = Users[i].Id * -1;
+            modifyUsers.Add(new User(negativeID, Users[i].Name.ToUpper(), Users[i].Email, Users[i].Roles, Users[i].BossId));
+        }
+
+        return modifyUsers;
     }
 
     [HttpGet, Route("boss")]
     public User? GetTheBoss()
     {
-        throw new NotImplementedException();
+        User? boss = Users.FirstOrDefault(x => x.BossId == null);
+        return boss;
     }
 
     [HttpGet, Route("fakes/{count:int}")]
     public IEnumerable<User> GetFakes(int count)
     {
         // Generer {count} fiktive ansatte
+
         throw new NotImplementedException();
     }
 
     [HttpGet, Route("names")]
     public IEnumerable<string> GetEmployeeNames()
     {
-        throw new NotImplementedException();
+        return Users.Select(x => x.Name);
     }
 
     [HttpGet, Route("search/{query}")]
     public IEnumerable<User> FindUsers(string query)
     {
         // Søk på navn, e-post, roller
-        throw new NotImplementedException();
+        try
+        {
+            var enumerator = Users.GetEnumerator();
+            IList<User> result = new List<User>();
+            while (enumerator.MoveNext())
+            {
+                User user = (User)enumerator.Current;
+                if (user.Name.ToUpper().Contains(query.ToUpper()))
+                {
+                    result.Add(user);
+                }
+                else if (user.Email.ToUpper().Contains(query.ToUpper()))
+                {
+                    result.Add(user);
+                }
+                else if (user.Roles.Any())
+                {
+                    var userRoles = user.Roles.ToList();
+                    foreach (var role in userRoles)
+                    {
+                        if (role.ToUpper().Contains(query.ToUpper()))
+                        {
+                            result.Add(user);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        catch (Exception)
+        {
+            return null!;
+        }
     }
 }
