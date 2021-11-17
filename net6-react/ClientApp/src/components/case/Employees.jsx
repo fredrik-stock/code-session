@@ -123,9 +123,7 @@ export const Employees = () => {
           what="Vise sjefen"
           how="Vis sjefen for organisasjonen her med <Employee />-komponenten">
           {CEO && (
-            <div
-              style={{ border: "2px solid black" }}
-              onClick={() => handleClick(CEO)}>
+            <div onClick={() => handleClick(CEO)}>
               <Employee Employee={CEO} />
             </div>
           )}
@@ -142,10 +140,7 @@ export const Employees = () => {
                     <h1>{employee[key].name}</h1>
                     {leader[key].map((e) => {
                       return (
-                        <div
-                          style={{ border: "2px solid black" }}
-                          key={e.id}
-                          onClick={() => handleClick(e)}>
+                        <div key={e.id} onClick={() => handleClick(e)}>
                           <Employee Employee={e} />
                         </div>
                       );
@@ -164,10 +159,7 @@ export const Employees = () => {
             <div>
               {Object.keys(bossHasBoss).map((key) => {
                 return (
-                  <div
-                    style={{ border: "2px solid black" }}
-                    onClick={() => handleClick(bossHasBoss[key])}
-                    key={key}>
+                  <div key={key} onClick={() => handleClick(bossHasBoss[key])}>
                     <Employee Employee={bossHasBoss[key]} />
                   </div>
                 );
@@ -187,7 +179,7 @@ export const Employees = () => {
             <>
               {leader[selected.id].map((follower) => {
                 return (
-                  <div>
+                  <div key={follower.id}>
                     <p>
                       <b>Navn: </b>
                       {follower.name}

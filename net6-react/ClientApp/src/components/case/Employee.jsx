@@ -4,7 +4,7 @@ export const Employee = (props) => {
   }
   const Employee = props.Employee;
   return (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center", border: "1px solid black" }}>
       <p>
         <b>Employee ID: </b>
         {Employee.id}
