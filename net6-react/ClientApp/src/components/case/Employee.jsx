@@ -1,6 +1,8 @@
 export const Employee = (props) => {
+  if (!props.Employee) {
+    return null;
+  }
   const Employee = props.Employee;
-
   return (
     <div style={{ textAlign: "center" }}>
       <p>
