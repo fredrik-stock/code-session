@@ -75,14 +75,18 @@ export const Employees = () => {
 
   const bossHasBoss = useMemo(() => {
     const empObj = {};
-    empData.forEach((employee) => {
-      if (leader[employee.bossId] != null) {
-        empObj[employee.id] = employee;
+    empData.forEach((emp) => {
+      // Check if emp has a boss
+      if (emp.bossId !== null) {
+        // Check if boss has a boss.
+        if (employee[emp.bossId].bossId !== null) {
+          empObj[emp.id] = emp;
+        }
       }
     });
     console.log("Memoing bossHasBoss: ", empObj);
     return empObj;
-  }, [empData, leader]);
+  }, [employee, empData]);
 
   useEffect(() => {
     console.log("Getting Initial Content");
