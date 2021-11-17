@@ -43,9 +43,8 @@ import { Employee } from "./Employee";
 export const Employees = () => {
   const [loading, isLoading] = useState(true);
   const [empData, setEmpData] = useState([]);
-  const [selected, setSelected] = useState({});
   const [CEO, setCEO] = useState({});
-  const [selectedBoss, setSelectedBoss] = useState({});
+  const [selected, setSelected] = useState({});
 
   const leader = useMemo(() => {
     const leaderObj = {};
@@ -108,99 +107,107 @@ export const Employees = () => {
 
   const handleClick = (data) => {
     setSelected(data);
-    if (data.bossId !== null) {
-      setSelectedBoss(employee[data.bossId]);
-    } else {
-      setSelectedBoss();
-    }
   };
 
-  return (
-    <div>
-      {loading ? (
-        <div>
-          <p>Loading</p>
-        </div>
-      ) : (
-        <div>
-          <h1>Brukere i organisasjonen</h1>
-          <Todo
-            what="Vise sjefen"
-            how="Vis sjefen for organisasjonen her med <Employee />-komponenten">
-            {CEO && (
-              <div
-                style={{ border: "2px solid black" }}
-                onClick={() => handleClick(CEO)}>
-                <Employee Employee={CEO} />
-              </div>
-            )}
-          </Todo>
+  if (loading) {
+    return (
+      <div>
+        <p>Loading</p>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <h1>Brukere i organisasjonen</h1>
+        <Todo
+          what="Vise sjefen"
+          how="Vis sjefen for organisasjonen her med <Employee />-komponenten">
+          {CEO && (
+            <div
+              style={{ border: "2px solid black" }}
+              onClick={() => handleClick(CEO)}>
+              <Employee Employee={CEO} />
+            </div>
+          )}
+        </Todo>
 
-          <Todo
-            what="Vise hvem folk rapporterer til"
-            how="Folk som har en sjef, gruppert på sjef. Vis navn på sjefen, og <Employee /> for den ansatte ">
-            {leader && (
-              <div>
-                {Object.keys(leader).map((key) => {
-                  return (
-                    <div key={key}>
-                      <h1>{employee[key].name}</h1>
-                      {leader[key].map((e) => {
-                        return (
-                          <div
-                            style={{ border: "2px solid black" }}
-                            key={e.id}
-                            onClick={() => handleClick(e)}>
-                            <Employee Employee={e} />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </Todo>
+        <Todo
+          what="Vise hvem folk rapporterer til"
+          how="Folk som har en sjef, gruppert på sjef. Vis navn på sjefen, og <Employee /> for den ansatte ">
+          {leader && (
+            <div>
+              {Object.keys(leader).map((key) => {
+                return (
+                  <div key={key}>
+                    <h1>{employee[key].name}</h1>
+                    {leader[key].map((e) => {
+                      return (
+                        <div
+                          style={{ border: "2px solid black" }}
+                          key={e.id}
+                          onClick={() => handleClick(e)}>
+                          <Employee Employee={e} />
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Todo>
 
-          <Todo
-            what="Gutta på gulvet"
-            how="<Employee /> for alle ansatte der sjefen har en sjef">
-            {bossHasBoss && (
-              <div>
-                {Object.keys(bossHasBoss).map((key) => {
-                  return (
-                    <div
-                      style={{ border: "2px solid black" }}
-                      onClick={() => handleClick(bossHasBoss[key])}
-                      key={key}>
-                      <Employee Employee={bossHasBoss[key]} />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </Todo>
+        <Todo
+          what="Gutta på gulvet"
+          how="<Employee /> for alle ansatte der sjefen har en sjef">
+          {bossHasBoss && (
+            <div>
+              {Object.keys(bossHasBoss).map((key) => {
+                return (
+                  <div
+                    style={{ border: "2px solid black" }}
+                    onClick={() => handleClick(bossHasBoss[key])}
+                    key={key}>
+                    <Employee Employee={bossHasBoss[key]} />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Todo>
+        <Todo what="Valgt bruker" how="Vise valgt bruker her">
+          <Employee Employee={selected} />
+        </Todo>
 
-          <Todo what="Valgt bruker" how="Vise valgt bruker her">
-            <Employee Employee={selected} />
-          </Todo>
-
-          <Todo
-            what="De som rapporterer til valgt bruker"
-            how="Vise navn og e-psotadresser for de som rapporterer til valgt bruker. Implementer med map + object deconstruct, eller finn på noe eget lurt">
-            {selectedBoss ? (
-              <div>
-                <h1>Reporting to: {selectedBoss.name}</h1>
-                <p>email: {selectedBoss.email}</p>
-              </div>
-            ) : (
-              <div>
-                <p>Reporting to nobody</p>
-              </div>
-            )}
-          </Todo>
-        </div>
-      )}
-    </div>
-  );
+        <Todo
+          what="De som rapporterer til valgt bruker"
+          how="Vise navn og e-psotadresser for de som rapporterer til valgt bruker. Implementer med map + object deconstruct, eller finn på noe eget lurt">
+          {/* Check if currently selected user is a leader */}
+          {leader[selected.id] ? (
+            <>
+              {leader[selected.id].map((follower) => {
+                return (
+                  <div>
+                    <p>
+                      <b>Navn: </b>
+                      {follower.name}
+                    </p>
+                    <p>
+                      <b>Epost: </b>
+                      {follower.email}
+                    </p>
+                    <hr />
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            <div>
+              <p>Ingen rapporterer til den valgte brukeren.</p>
+            </div>
+          )}
+        </Todo>
+      </div>
+    );
+  }
 };
