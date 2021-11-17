@@ -96,11 +96,12 @@ export const Employees = () => {
         .json()
         .then((data) => {
           setEmpData(data);
+          isLoading(false);
         })
         .catch((err) => {
           console.error(err);
+          isLoading(false);
         });
-      isLoading(false);
     }
     fetchData();
   }, []);
