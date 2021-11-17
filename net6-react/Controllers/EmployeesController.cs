@@ -81,22 +81,12 @@ public class EmployeesController : ControllerBase
         // Søk på navn, e-post, roller
         try
         {
-            var enumerator = Users.GetEnumerator();
-            IList<User> result = new List<User>();
-            while (enumerator.MoveNext())
+            var res = Users.Where(User => User.Name.Contains(query, StringComparison.InvariantCultureIgnoreCase) 
+            || User.Email.Contains(query, StringComparison.InvariantCultureIgnoreCase) 
+            || User.Roles.Any(role => role.Contains(query, StringComparison.InvariantCultureIgnoreCase)));
+            if (res.Any())
             {
-                User user = (User)enumerator.Current;
-                if (user.Name.Contains(query, StringComparison.InvariantCultureIgnoreCase) 
-                    || user.Email.Contains(query, StringComparison.InvariantCultureIgnoreCase) 
-                    || user.Roles.Any(role => role.Contains(query, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    result.Add(user);
-                }
-                
-            }
-            if(result.Count > 0)
-            {
-                return Ok(result);
+                return Ok(res);
             } else
             {
                 return NotFound(query);
