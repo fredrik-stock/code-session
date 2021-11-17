@@ -43,9 +43,9 @@ import { Employee } from "./Employee";
 export const Employees = () => {
   const [loading, isLoading] = useState(true);
   const [empData, setEmpData] = useState([]);
-  const [selected, setSelected] = useState([]);
-  const [CEO, setCEO] = useState();
-  const [selectedBoss, setSelectedBoss] = useState();
+  const [selected, setSelected] = useState({});
+  const [CEO, setCEO] = useState({});
+  const [selectedBoss, setSelectedBoss] = useState({});
 
   const leader = useMemo(() => {
     const leaderObj = {};
@@ -119,22 +119,6 @@ export const Employees = () => {
       ) : (
         <div>
           <h1>Brukere i organisasjonen</h1>
-          {/* {empData.map((employee) => {
-            return (
-              <div key={employee.id} onClick={() => handleClick(employee)}>
-                <Employee Employee={employee} />
-              </div>
-            );
-          })} */}
-
-          {/* <Todo what="Fjerne denne" how="Fjern denne todoen">
-            <strong>
-              For resten av todoene er det bare å putte løsningen inni
-              komponenten.
-            </strong>
-            <div>Slik som dette</div>
-          </Todo> */}
-
           <Todo
             what="Vise sjefen"
             how="Vis sjefen for organisasjonen her med <Employee />-komponenten">
