@@ -33,12 +33,10 @@ public class EmployeesController : ControllerBase
     {
         // Returner brukerne, men med navn uppercased og negativ userId (101 => -101)
         // Organisasjons-strukturen må bevares (Id / BossId)
-        IList<User> modifyUsers = new List<User>();
+        List<User> modifyUsers = new();
         foreach (var user in Users)
         {
-            var negativeID = user.Id * -1;
-            var negativBossId = user.BossId * -1;
-            modifyUsers.Add(new User(negativeID, user.Name.ToUpper(), user.Email, user.Roles, negativBossId));
+            modifyUsers.Add(new User(-user.Id, user.Name.ToUpper(), user.Email, user.Roles, -user.BossId));
         }
         return modifyUsers;
     }
