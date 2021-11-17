@@ -76,7 +76,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet, Route("search/{query}")]
-    public IEnumerable<User> FindUsers(string query)
+    public IActionResult FindUsers(string query)
     {
         // Søk på navn, e-post, roller
         try
@@ -86,31 +86,25 @@ public class EmployeesController : ControllerBase
             while (enumerator.MoveNext())
             {
                 User user = (User)enumerator.Current;
-                if (user.Name.ToUpper().Contains(query.ToUpper()))
+                if (user.Name.Contains(query, StringComparison.InvariantCultureIgnoreCase) 
+                    || user.Email.Contains(query, StringComparison.InvariantCultureIgnoreCase) 
+                    || user.Roles.Any(role => role.Contains(query, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     result.Add(user);
                 }
-                else if (user.Email.ToUpper().Contains(query.ToUpper()))
-                {
-                    result.Add(user);
-                }
-                else if (user.Roles.Any())
-                {
-                    var userRoles = user.Roles.ToList();
-                    foreach (var role in userRoles)
-                    {
-                        if (role.ToUpper().Contains(query.ToUpper()))
-                        {
-                            result.Add(user);
-                        }
-                    }
-                }
+                
             }
-            return result;
+            if(result.Count > 0)
+            {
+                return Ok(result);
+            } else
+            {
+                return NotFound(query);
+            }
         }
         catch (Exception)
         {
-            return null!;
+            return BadRequest();
         }
     }
 }
