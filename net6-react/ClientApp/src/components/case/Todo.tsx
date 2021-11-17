@@ -1,6 +1,14 @@
 import { ReactNode } from "react";
 
-export const Todo = ({ what, how, children }: { what: string; how?: string; children: ReactNode }) => {
+export const Todo = ({
+  what,
+  how,
+  children,
+}: {
+  what: string;
+  how?: string;
+  children: ReactNode;
+}) => {
   return (
     <div
       style={{
@@ -10,8 +18,7 @@ export const Todo = ({ what, how, children }: { what: string; how?: string; chil
         display: "flex",
         flexDirection: "column",
         gap: 16,
-      }}
-    >
+      }}>
       <strong>{what}</strong>
       {how && <div>{how}</div>}
 
@@ -21,8 +28,7 @@ export const Todo = ({ what, how, children }: { what: string; how?: string; chil
             backgroundColor: "#fff",
             border: "1px solid green",
             padding: 16,
-          }}
-        >
+          }}>
           {children}
         </div>
       )}

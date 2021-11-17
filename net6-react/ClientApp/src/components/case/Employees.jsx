@@ -1,4 +1,6 @@
+import React, { useState, useEffect, useMemo } from "react";
 import { Todo } from "./Todo";
+import { Employee } from "./Employee";
 
 /** 1. Last inn data, vis indikasjon på at data laster
  *
@@ -32,34 +34,172 @@ import { Todo } from "./Todo";
  *    Alt burde fungere 100% som vanlig etter flipp.
  */
 
+// bossId: null
+// email: "ola@x.no"
+// id: 1
+// name: "Ola Olsen"
+// roles: ['Daglig leder']
+
 export const Employees = () => {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-      }}
-    >
-      <h1>Brukere i organisasjonen</h1>
+  const [loading, isLoading] = useState(true);
+  const [empData, setEmpData] = useState([]);
+  const [CEO, setCEO] = useState({});
+  const [selected, setSelected] = useState({});
 
-      <Todo what="Fjerne denne" how="Fjern denne todoen">
-        <strong>For resten av todoene er det bare å putte løsningen inni komponenten.</strong>
-        <div>Slik som dette</div>
-      </Todo>
+  const leader = useMemo(() => {
+    const leaderObj = {};
+    empData.forEach((employee) => {
+      if (employee.bossId !== null) {
+        if (leaderObj.hasOwnProperty(employee.bossId)) {
+          leaderObj[employee.bossId].push(employee);
+        } else {
+          leaderObj[employee.bossId] = [employee];
+        }
+      } else {
+        setCEO(employee);
+      }
+    });
+    console.log("Memoing Leaders: ", leaderObj);
+    return leaderObj;
+  }, [empData]);
 
-      <Todo what="Vise sjefen" how="Vis sjefen for organisasjonen her med <Employee />-komponenten" />
+  const employee = useMemo(() => {
+    const empObj = {};
+    empData.forEach((employee) => {
+      empObj[employee.id] = employee;
+    });
+    console.log("Memoing Employee: ", empObj);
+    return empObj;
+  }, [empData]);
 
-      <Todo what="Vise hvem folk rapporterer til" how="Folk som har en sjef, gruppert på sjef. Vis navn på sjefen, og <Employee /> for den ansatte " />
+  const bossHasBoss = useMemo(() => {
+    const empObj = {};
+    empData.forEach((emp) => {
+      // Check if emp has a boss
+      if (emp.bossId !== null) {
+        // Check if boss has a boss.
+        if (employee[emp.bossId].bossId !== null) {
+          empObj[emp.id] = emp;
+        }
+      }
+    });
+    console.log("Memoing bossHasBoss: ", empObj);
+    return empObj;
+  }, [employee, empData]);
 
-      <Todo what="Gutta på gulvet" how="<Employee /> for alle ansatte der sjefen har en sjef" />
+  useEffect(() => {
+    console.log("Getting Initial Content");
+    async function fetchData() {
+      const res = await fetch("employees/modified");
+      res
+        .json()
+        .then((data) => {
+          setEmpData(data);
+          isLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          isLoading(false);
+        });
+    }
+    fetchData();
+  }, []);
 
-      <Todo what="Valgt bruker" how="Vise valgt bruker her" />
+  const handleClick = (data) => {
+    setSelected(data);
+  };
 
-      <Todo
-        what="De som rapporterer til valgt bruker"
-        how="Vise navn og e-psotadresser for de som rapporterer til valgt bruker. Implementer med map + object deconstruct, eller finn på noe eget lurt"
-      />
-    </div>
-  );
+  if (loading) {
+    return (
+      <div>
+        <p>Loading</p>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <h1>Brukere i organisasjonen</h1>
+        <Todo
+          what="Vise sjefen"
+          how="Vis sjefen for organisasjonen her med <Employee />-komponenten">
+          {CEO && (
+            <div onClick={() => handleClick(CEO)}>
+              <Employee Employee={CEO} />
+            </div>
+          )}
+        </Todo>
+
+        <Todo
+          what="Vise hvem folk rapporterer til"
+          how="Folk som har en sjef, gruppert på sjef. Vis navn på sjefen, og <Employee /> for den ansatte ">
+          {leader && (
+            <div>
+              {Object.keys(leader).map((key) => {
+                return (
+                  <div key={key}>
+                    <h1>{employee[key].name}</h1>
+                    {leader[key].map((e) => {
+                      return (
+                        <div key={e.id} onClick={() => handleClick(e)}>
+                          <Employee Employee={e} />
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Todo>
+
+        <Todo
+          what="Gutta på gulvet"
+          how="<Employee /> for alle ansatte der sjefen har en sjef">
+          {bossHasBoss && (
+            <div>
+              {Object.keys(bossHasBoss).map((key) => {
+                return (
+                  <div key={key} onClick={() => handleClick(bossHasBoss[key])}>
+                    <Employee Employee={bossHasBoss[key]} />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Todo>
+        <Todo what="Valgt bruker" how="Vise valgt bruker her">
+          <Employee Employee={selected} />
+        </Todo>
+
+        <Todo
+          what="De som rapporterer til valgt bruker"
+          how="Vise navn og e-psotadresser for de som rapporterer til valgt bruker. Implementer med map + object deconstruct, eller finn på noe eget lurt">
+          {/* Check if currently selected user is a leader */}
+          {leader[selected.id] ? (
+            <>
+              {leader[selected.id].map((follower) => {
+                return (
+                  <div key={follower.id}>
+                    <p>
+                      <b>Navn: </b>
+                      {follower.name}
+                    </p>
+                    <p>
+                      <b>Epost: </b>
+                      {follower.email}
+                    </p>
+                    <hr />
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            <div>
+              <p>Ingen rapporterer til den valgte brukeren.</p>
+            </div>
+          )}
+        </Todo>
+      </div>
+    );
+  }
 };
